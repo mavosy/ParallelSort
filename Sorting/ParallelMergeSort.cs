@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sorting
@@ -13,13 +15,14 @@ namespace Sorting
         // Värdet kan behöva optimeras efter testning.
         // Alternativt låter man storleken på arrayen inputOutput bestämma threshold.
 
-        public int NumberOfRecursions { get; set; }
-
-
         //private static readonly int _arraySizeThresholdFactor = 2;
-        private readonly int _threshold = Environment.ProcessorCount * 8;
+        private readonly int _threshold = Environment.ProcessorCount * 2;
+
+        private int _recursionCount = 0;
 
         public string Name { get { return "ParallelMergeSort"; } }
+
+        public int GetRecursionCount() { return _recursionCount; }
 
         public void Sort(T[] inputOutput)
         {
@@ -49,12 +52,22 @@ namespace Sorting
                 }
                 else
                 {
+                    //_recursionCount++;
                     int middleIndex = (firstIndex + lastIndex) / 2;
                     Parallel.Invoke(
-                        () => MergeSort(inputOutput, tempArray, firstIndex, middleIndex, comparer),
-                        () => MergeSort(inputOutput, tempArray, middleIndex + 1, lastIndex, comparer));
-
-                    NumberOfRecursions++;
+                        () =>
+                        {
+                            //Debug.WriteLine($"Startar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
+                            MergeSort(inputOutput, tempArray, firstIndex, middleIndex, comparer);
+                            //Debug.WriteLine($"Avslutar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
+                        },
+                        () =>
+                        {
+                            //Debug.WriteLine($"Startar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
+                            MergeSort(inputOutput, tempArray, middleIndex + 1, lastIndex, comparer);
+                            //Debug.WriteLine($"Avslutar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
+                        }
+                    );
 
                     Merge(inputOutput, tempArray, firstIndex, middleIndex, lastIndex, comparer);
                 }
