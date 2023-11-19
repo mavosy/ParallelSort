@@ -100,7 +100,7 @@ namespace MeasurementApp.ViewModels
             start.Start();
         }
 
-        private static Tuple<double, double, bool> Run(ITopNSort<MyKeyValue<int, string>> topNSort, int totalNumberOfItems, int selectedNumberOfItems, int arrayPreparationIndex)
+        private static Tuple<double, double, bool> Run (ITopNSort<MyKeyValue<int, string>> topNSort, int totalNumberOfItems, int selectedNumberOfItems, int arrayPreparationIndex)
         {
             MyKeyValue<int, string>[] numbers = null;
             Stopwatch wallClock = new Stopwatch();
@@ -130,15 +130,22 @@ namespace MeasurementApp.ViewModels
                                                 ArrayExtensions.VerifySortedOneToLength(result, selectedNumberOfItems));
         }
 
+        //1. add a new class to Sorting/TopNSort.cs
+        //2. add a new instance of the class to the list below
+        //3. add a new string to the list below
+        //4. add a new case to the switch statement in Run()
         private readonly ITopNSort<MyKeyValue<int, string>>[] availableTopNSortAlgorithms = {
                 new TopNStandardSort<MyKeyValue<int, string>>(),
-                new TopNSelectionSort<MyKeyValue<int, string>>()
+                new TopNSelectionSort<MyKeyValue<int, string>>(),
+                new NewTopNStandardSort<MyKeyValue<int, string>>()
             };
+
         private readonly string[] availableArrayPreparation = {
                 "Ordered",
                 "Reverse ordered",
                 "Random"
             };
+
         private int totalNumberOfItems;
         private int selectedNumberOfItems;
         private int arrayPreparationIndex;
