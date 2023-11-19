@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MeasurementApp.Views"
-             mc:Ignorable="d" Height="446.612" Width="795.482">
+             mc:Ignorable="d" Height="446.612" Width="878">
     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <DataGrid x:Name="AvailableSortingAlgorithms"
                   ItemsSource="{Binding AvailableAlgorithms}"
@@ -18,7 +18,7 @@
                 <DataGridCheckBoxColumn Header="Run?" Binding="{Binding Run}" MinWidth="10" Width="40"/>
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel Orientation="Vertical" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="523">
+        <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Stretch" Width="604">
             <StackPanel Orientation="Vertical" Margin="10,10,10,10" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal" Margin="10,10,10,10" VerticalAlignment="Top">
                     <Label Content="Number of items to sort:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
@@ -30,8 +30,8 @@
                 </StackPanel>
             </StackPanel>
             <Button Command="{Binding RunCommand}" IsEnabled="{Binding RunIsEnabled}" Content="Start" Width="75"/>
-            <ScrollViewer Height="240" Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Visible" IsEnabled="True">
-                <TextBox x:Name="ResultLog" Text="{Binding ResultLog}" IsReadOnly="True" UndoLimit="0" MinHeight="240" Width="483" VerticalAlignment="Top"/>
+            <ScrollViewer Height="240" Margin="10" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Visible" IsEnabled="True" Width="578">
+                <TextBox x:Name="ResultLog" Text="{Binding ResultLog}" IsReadOnly="True" UndoLimit="0" MinHeight="240" Width="553"/>
             </ScrollViewer>
         </StackPanel>
     </StackPanel>

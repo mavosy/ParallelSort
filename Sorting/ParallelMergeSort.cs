@@ -13,6 +13,9 @@ namespace Sorting
         // Värdet kan behöva optimeras efter testning.
         // Alternativt låter man storleken på arrayen inputOutput bestämma threshold.
 
+        public int NumberOfRecursions { get; set; }
+
+
         //private static readonly int _arraySizeThresholdFactor = 2;
         private readonly int _threshold = Environment.ProcessorCount * 8;
 
@@ -50,6 +53,8 @@ namespace Sorting
                     Parallel.Invoke(
                         () => MergeSort(inputOutput, tempArray, firstIndex, middleIndex, comparer),
                         () => MergeSort(inputOutput, tempArray, middleIndex + 1, lastIndex, comparer));
+
+                    NumberOfRecursions++;
 
                     Merge(inputOutput, tempArray, firstIndex, middleIndex, lastIndex, comparer);
                 }
