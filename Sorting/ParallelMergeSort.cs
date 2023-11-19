@@ -14,7 +14,7 @@ namespace Sorting
         // Alternativt låter man storleken på arrayen inputOutput bestämma threshold.
 
         //private static readonly int _arraySizeThresholdFactor = 2;
-        private readonly int _threshold = Environment.ProcessorCount * 2;
+        private readonly int _threshold = Environment.ProcessorCount * 8;
 
         public string Name { get { return "ParallelMergeSort"; } }
 
