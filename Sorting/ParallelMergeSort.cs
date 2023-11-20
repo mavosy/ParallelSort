@@ -81,7 +81,6 @@ namespace Sorting
             }
         }
 
-        // TODO refaktorera/clean code Merge
         private void Merge(T[] inputOutput, T[] tempArray, int firstIndex, int middleIndex, int lastIndex, IComparer<T> comparer)
         {
             int firstHalfIndex = firstIndex, secondHalfIndex = middleIndex + 1, mergedIndex = firstIndex;
