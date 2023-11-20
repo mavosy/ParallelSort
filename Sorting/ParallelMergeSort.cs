@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sorting
@@ -11,18 +7,14 @@ namespace Sorting
     //klassen kräver att typen T ska vara jämförbar med sig själv
     public class ParallelMergeSort<T> : ISort<T> where T : IComparable<T>
     {
-        // Sätter ett gränsvärde för storleken på arrayen. Vid små arrayer ska InsertionSort användas istället för MergeSort, för att undvika deoptimisering.
-        // Värdet kan behöva optimeras efter testning.
-        // Alternativt låter man storleken på arrayen inputOutput bestämma threshold.
+        // Sätter ett gränsvärde för storleken på arrayen.
+        // Vid små arrayer ska InsertionSort användas istället för MergeSort, för att undvika deoptimisering.
+        // Faktorn är delvis optimerad efter testning, men bara testad på PC med 8 logiska processorer.
+        // Alternativt låter man storleken på arrayen inputOutput bestämma värdet på _thresholdSortAlgorithmChange.
 
-        //private static readonly int _arraySizeThresholdFactor = 2;
-        private readonly int _threshold = Environment.ProcessorCount * 2;
-
-        private int _recursionCount = 0;
+        private readonly int _thresholdSortAlgorithmChange = Environment.ProcessorCount * 10;
 
         public string Name { get { return "ParallelMergeSort"; } }
-
-        public int GetRecursionCount() { return _recursionCount; }
 
         public void Sort(T[] inputOutput)
         {
@@ -35,24 +27,23 @@ namespace Sorting
             if (inputOutput == null) throw new ArgumentNullException(nameof(inputOutput));
             if (comparer == null) throw new ArgumentNullException(nameof(comparer));
             T[] tempArray = new T[inputOutput.Length];
-            MergeSort(inputOutput, tempArray, 0, inputOutput.Length - 1, comparer);
+            int firstIndex = 0;
+            int lastIndex = inputOutput.Length - 1;
+            MergeSort(inputOutput, tempArray, firstIndex, lastIndex, comparer);
         }
 
-        // TODO Göra något om arraySize är 1
         private void MergeSort(T[] inputOutput, T[] tempArray, int firstIndex, int lastIndex, IComparer<T> comparer)
         {
             bool arraySizeLargerThanOne = firstIndex < lastIndex;
             if (arraySizeLargerThanOne)
             {
-                bool arraySmallerThanThreshold = lastIndex - firstIndex < _threshold;
-
+                bool arraySmallerThanThreshold = lastIndex - firstIndex < _thresholdSortAlgorithmChange;
                 if (arraySmallerThanThreshold)
                 {
                     InsertionSort(inputOutput, firstIndex, lastIndex, comparer);
                 }
                 else
                 {
-                    //_recursionCount++;
                     int middleIndex = (firstIndex + lastIndex) / 2;
                     Parallel.Invoke(
                         () =>
@@ -74,52 +65,49 @@ namespace Sorting
             }
         }
 
-        // TODO refaktorera/clean code InsertionSort
         private void InsertionSort(T[] inputOutput, int firstIndex, int lastIndex, IComparer<T> comparer)
         {
-            for (int i = firstIndex + 1; i <= lastIndex; i++)
+            for (int currentIndex = firstIndex + 1; currentIndex <= lastIndex; currentIndex++)
             {
-                T key = inputOutput[i];
-                int j = i - 1;
+                T key = inputOutput[currentIndex];
+                int compareIndex = currentIndex - 1;
 
-                while (j >= firstIndex && comparer.Compare(inputOutput[j], key) > 0)
+                while (compareIndex >= firstIndex && comparer.Compare(inputOutput[compareIndex], key) > 0)
                 {
-                    inputOutput[j + 1] = inputOutput[j];
-                    j--;
+                    inputOutput[compareIndex + 1] = inputOutput[compareIndex];
+                    compareIndex--;
                 }
-                inputOutput[j + 1] = key;
+                inputOutput[compareIndex + 1] = key;
             }
         }
 
         // TODO refaktorera/clean code Merge
         private void Merge(T[] inputOutput, T[] tempArray, int firstIndex, int middleIndex, int lastIndex, IComparer<T> comparer)
         {
-            int i = firstIndex, j = middleIndex + 1, k = firstIndex;
-            while (i <= middleIndex && j <= lastIndex)
+            int firstHalfIndex = firstIndex, secondHalfIndex = middleIndex + 1, mergedIndex = firstIndex;
+            while (firstHalfIndex <= middleIndex && secondHalfIndex <= lastIndex)
             {
-                if (comparer.Compare(inputOutput[i], inputOutput[j]) <= 0)
+                bool firstIsLessOrEqualToLast = comparer.Compare(inputOutput[firstHalfIndex], inputOutput[secondHalfIndex]) <= 0;
+                if (firstIsLessOrEqualToLast)
                 {
-                    tempArray[k++] = inputOutput[i++];
+                    tempArray[mergedIndex++] = inputOutput[firstHalfIndex++];
                 }
                 else
                 {
-                    tempArray[k++] = inputOutput[j++];
+                    tempArray[mergedIndex++] = inputOutput[secondHalfIndex++];
                 }
             }
 
-            while (i <= middleIndex)
-            {
-                tempArray[k++] = inputOutput[i++];
-            }
+            CopyRemainingElementsFromArraySections(inputOutput, tempArray, firstHalfIndex, middleIndex, mergedIndex);
+            CopyRemainingElementsFromArraySections(inputOutput, tempArray, secondHalfIndex, lastIndex, mergedIndex);
+            Array.Copy(tempArray, firstIndex, inputOutput, firstIndex, lastIndex-firstIndex+1);
+        }
 
-            while (j <= lastIndex)
+        private void CopyRemainingElementsFromArraySections(T[] sourceArray, T[] destinationArray, int sourceArrayStart, int sourceArrayEnd, int destinationIndex)
+        {
+            while (sourceArrayStart <= sourceArrayEnd)
             {
-                tempArray[k++] = inputOutput[j++];
-            }
-
-            for (i = firstIndex; i <= lastIndex; i++)
-            {
-                inputOutput[i] = tempArray[i];
+                destinationArray[destinationIndex++] = sourceArray[sourceArrayStart++];
             }
         }
     }
