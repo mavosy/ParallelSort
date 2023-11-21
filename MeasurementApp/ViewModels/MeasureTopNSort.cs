@@ -130,10 +130,6 @@ namespace MeasurementApp.ViewModels
                                                 ArrayExtensions.VerifySortedOneToLength(result, selectedNumberOfItems));
         }
 
-        //1. add a new class to Sorting/TopNSort.cs
-        //2. add a new instance of the class to the list below
-        //3. add a new string to the list below
-        //4. add a new case to the switch statement in Run()
         private readonly ITopNSort<MyKeyValue<int, string>>[] availableTopNSortAlgorithms = {
                 new TopNStandardSort<MyKeyValue<int, string>>(),
                 new TopNSelectionSort<MyKeyValue<int, string>>(),
