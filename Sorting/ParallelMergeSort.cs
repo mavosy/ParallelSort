@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sorting
@@ -9,10 +11,10 @@ namespace Sorting
     {
         // Sätter ett gränsvärde för storleken på arrayen.
         // Vid små arrayer ska InsertionSort användas istället för MergeSort, för att undvika deoptimisering.
-        // Faktorn är delvis optimerad efter testning, men bara testad på PC med 8 logiska processorer.
+        // Värdet är delvis optimerat efter testning, men bara testad på PC med 8 logiska processorer.
         // Alternativt låter man storleken på arrayen inputOutput bestämma värdet på _thresholdSortAlgorithmChange.
 
-        private readonly int _thresholdSortAlgorithmChange = Environment.ProcessorCount * 10;
+        private readonly int _thresholdSortAlgorithmChange = 80;
 
         public string Name { get { return "ParallelMergeSort"; } }
 
@@ -46,18 +48,8 @@ namespace Sorting
                 {
                     int middleIndex = (firstIndex + lastIndex) / 2;
                     Parallel.Invoke(
-                        () =>
-                        {
-                            //Debug.WriteLine($"Startar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
-                            MergeSort(inputOutput, tempArray, firstIndex, middleIndex, comparer);
-                            //Debug.WriteLine($"Avslutar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
-                        },
-                        () =>
-                        {
-                            //Debug.WriteLine($"Startar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
-                            MergeSort(inputOutput, tempArray, middleIndex + 1, lastIndex, comparer);
-                            //Debug.WriteLine($"Avslutar parallell operation på tråd {Thread.CurrentThread.ManagedThreadId}");
-                        }
+                        () => MergeSort(inputOutput, tempArray, firstIndex, middleIndex, comparer),
+                        () => MergeSort(inputOutput, tempArray, middleIndex + 1, lastIndex, comparer)
                     );
 
                     Merge(inputOutput, tempArray, firstIndex, middleIndex, lastIndex, comparer);
@@ -99,7 +91,7 @@ namespace Sorting
 
             CopyRemainingElementsFromArraySections(inputOutput, tempArray, firstHalfIndex, middleIndex, mergedIndex);
             CopyRemainingElementsFromArraySections(inputOutput, tempArray, secondHalfIndex, lastIndex, mergedIndex);
-            Array.Copy(tempArray, firstIndex, inputOutput, firstIndex, lastIndex-firstIndex+1);
+            Array.Copy(tempArray, firstIndex, inputOutput, firstIndex, lastIndex-firstIndex + 1);
         }
 
         private void CopyRemainingElementsFromArraySections(T[] sourceArray, T[] destinationArray, int sourceArrayStart, int sourceArrayEnd, int destinationIndex)
