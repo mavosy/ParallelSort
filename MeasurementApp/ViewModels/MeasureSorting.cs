@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.Windows;
 using Sorting;
 using Utilities;
 
@@ -114,6 +114,7 @@ namespace MeasurementApp.ViewModels
             sort.Sort(numbers);
             processUserTime.Stop();
             wallClock.Stop();
+            //MessageBox.Show(Environment.ProcessorCount.ToString());
             return
                 new Tuple<double, double, bool>(wallClock.Elapsed.TotalSeconds,
                                                 processUserTime.ElapsedTotalSeconds,
@@ -122,7 +123,8 @@ namespace MeasurementApp.ViewModels
 
         private readonly ISort<MyKeyValue<int, string>>[] availableSortingAlgorithms = {
                 new StandardSort<MyKeyValue<int, string>>(),
-                new SelectionSort<MyKeyValue<int, string>>()
+                new SelectionSort<MyKeyValue<int, string>>(),
+                new ParallelMergeSort<MyKeyValue<int, string>>()
             };
         private readonly string[] availableArrayPreparation = {
                 "Ordered",
