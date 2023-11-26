@@ -18,13 +18,6 @@ namespace Sorting
 
         public T[] TopNSort(T[] inputOutput, int n, IComparer<T> comparer)
         {
-            //För små arrayer sorteras de sekventiellt (godtyckligt satt till 2*antal trådar)
-            if (inputOutput.Length <= Process.GetCurrentProcess().Threads.Count * 2)
-            {
-                Array.Sort(inputOutput, comparer);
-                return inputOutput.Take(n).ToArray();
-            }
-
             var sortedArray = inputOutput.AsParallel().AsOrdered().OrderBy(x => x, comparer).Take(n).ToArray();
 
             return sortedArray;

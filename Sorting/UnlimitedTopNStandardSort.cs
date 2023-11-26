@@ -19,12 +19,6 @@ namespace Sorting
 
         public T[] TopNSort(T[] inputOutput, int n, IComparer<T> comparer)
         {
-            //För små arrayer sorteras de sekventiellt (godtyckligt satt till 2*antal trådar)
-            if (inputOutput.Length <= Process.GetCurrentProcess().Threads.Count*2)
-            {
-                Array.Sort(inputOutput, comparer);
-                return inputOutput.Take(n).ToArray();
-            }
 
             //Metoden ParallelTopNSort tar en extra parameter som anger antalet trådar metoden får använda. Där -1 är max antal möjliga kärnor eller 4 kärnor.
             //Vi skulle också kunna sätta degree till Environment.ProcessorCount för att använda alla tillgängliga kärnor
