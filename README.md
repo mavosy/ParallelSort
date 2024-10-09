@@ -60,8 +60,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
-
 **ParallelSort** is a C# and WPF application developed as a school project that implements amongst other things a parallelized merge sort algorithm. 
 The project aims to demonstrate how to improve sorting efficiency by leveraging parallel computing. The algorithm is designed to divide 
 the data into smaller chunks that can be sorted concurrently using multi-threading techniques. This project was developed collaboratively 
@@ -69,6 +67,12 @@ with a classmate to explore the challenges and advantages of parallel algorithms
 
 The project also includes additional sorting algorithms such as selection sort, standard sort, and variants of Top-N sorting algorithms for comparison, 
 some of which are implemented by the teachers as comparing. The UI and the measuring code is not mine, just the merge sort.
+
+<br/>
+
+<div align="center">
+  <img src="MeasurementApp/Images/ParallelSort_screenshot.png" alt="Product Screenshot" width="700" />
+</div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -166,7 +170,6 @@ Project Link: [https://github.com/mavosy/ParallelSort](https://github.com/mavosy
 [license-url]: https://github.com/mavosy/ParallelSort/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/malte-von-sydow
-[product-screenshot]: images/screenshot.png
 [csharp-shield]: https://custom-icon-badges.demolab.com/badge/C%23-%23239120.svg?logo=cshrp&logoColor=white
 [csharp-url]: https://learn.microsoft.com/en-us/dotnet/csharp/
 [wpf-shield]: https://img.shields.io/badge/WPF-512BD4?style=for-the-badge&logo=windows&logoColor=white
